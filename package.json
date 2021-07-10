@@ -1,0 +1,22 @@
+{
+  "name": "handitrainer",
+  "version": "1.0.0",
+  "description": "Web app to improve your handwriting speed and endurance.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vec-Tors/HandiTrainer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vec-Tors/HandiTrainer/issues"
+  },
+  "homepage": "https://github.com/Vec-Tors/HandiTrainer#readme",
+  "dependencies": {
+    "humanize-duration": "^3.27.0"
+  }
+}
