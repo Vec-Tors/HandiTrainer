@@ -1,9 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap');
 
-p, a, h1, h2, h3, h4, h5, h6 {
+p, a, div, h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto', Arial, sans-serif;
 }
 
 h1.title {
     text-align: center;
+}
+
+.center {
+    text-align: center;
+    align-self: center;
+    align-content: center;
 }
