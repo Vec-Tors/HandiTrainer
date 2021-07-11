@@ -1,8 +1,8 @@
 
 function scrollTo(element) {
-    const y = element.getBoundingClientRect().top + window.scrollY;
-    window.scroll({
-        top: y,
+    const y = element.getBoundingClientRect().top + element.parentElement.scrollTop;
+    element.parentElement.scroll({
+        top: y - element.parentElement.offsetHeight,
         behavior: 'smooth'
     });
 }
@@ -29,7 +29,9 @@ class ChallengeTextLineGroup {
     toHTML() {
         let ret = "";
         for (i = 0; i < this.lines.length; i++) {
-            ret += `<div class="challenge-text" id="challenge-line-${i+1}">${i+1}. <span class="${(i == this.selected) ? 'challenge-text-selected-line' : ''}">${this.lines[i]}</span></div><br>`
+            if /*(Math.abs(i - this.selected) < 3)*/ (true) {
+                ret += `<div class="challenge-text" id="challenge-line-${i+1}">${i+1}. <span class="${(i == this.selected) ? 'challenge-text-selected-line' : ''}">${this.lines[i]}</span></div><br>`
+            }   
         }
         return ret;
     }
@@ -101,7 +103,7 @@ function startLevel(d) {
     renderChallengeText(lines);
     console.log('Level starting with difficulty ' + d.toString());
 
-    document.onkeypress = (e) => {
+    document.onkeydown = (e) => {
 
         if (e.repeat || !level_running) {
             return;
@@ -114,10 +116,13 @@ function startLevel(d) {
         else if (e.key == 'Backspace' && lines.selected > 0) {
             lines.selected--;
         }
+        else {
+            return;
+        }
     
         if (lines.selected + 1 > lines.lines.length) {
             level_running = false;
-            document.onkeypress = null;
+            document.onkeydown = null;
         }
         else {
             //document.getElementById(`challenge-line-${lines.selected+1}`).scrollIntoView();
