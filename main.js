@@ -104,12 +104,16 @@ function startLevel(d) {
     console.log('Level starting with difficulty ' + d.toString());
 
     document.onkeydown = (e) => {
-
+        
         if (e.repeat || !level_running) {
             return;
         }
 
-        if (e.key == "Enter") {
+        if (e.key == " ") {
+            e.preventDefault();
+        }
+
+        if (e.key == "Enter" || e.key == " ") {
             lines.selected++;
         }
     
