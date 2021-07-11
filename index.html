@@ -4,7 +4,9 @@
         <meta charset="utf-8">
         <meta name="author" content="https://github.com/Vec-Tors/">
         <title>HandiTrainer</title>
-        <link rel="stylesheet" href="style.css">
+        
+        <link rel="stylesheet/less" type="text/css" href="style.less">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/4.1.1/less.min.js"></script>
         
         <script src="node_modules/humanize-duration/humanize-duration.js"></script>
         <script src="https://unpkg.com/txtgen@2.2.8/dist/txtgen.min.js"></script>
@@ -15,10 +17,11 @@
     <div class="center">
         <div><b>Current difficulty:</b> <div id="difficulty" style="display: inline;">Loading...</div></div>
     </div>
-
+    <br><br><br>
     <div class="center">
         <div id="challenge-text">
             <!-- Text -->
+            <p class="challenge-text" style="text-align: center;">...</p>
         </div>
     </div>
 

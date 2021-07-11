@@ -1,11 +1,10 @@
 
-const LPS = 2.5; // Letters per second
-var difficulty; // Difficulty is in seconds. Letter count = seconds * 2.5.
-
-function setDifficulty(d) { 
-    // Take a number of seconds as input and update the difficulty text
-    difficulty = d;
-    document.getElementById("difficulty").textContent = `${Math.round(difficulty * LPS)} letters / ${difficulty} seconds`;
+function scrollTo(element) {
+    const y = element.getBoundingClientRect().top + window.scrollY;
+    window.scroll({
+        top: y,
+        behavior: 'smooth'
+    });
 }
 
 function countLetters(text) { 
@@ -19,6 +18,60 @@ function countLetters(text) {
 
     return length;
 
+}
+
+class ChallengeTextLineGroup {
+    constructor(lines, selected = 0) {
+        this.lines = lines // Array of ChallengeTextLine
+        this.selected = selected // Int representing the index of the selected line (zero-indexed)
+    }
+
+    toHTML() {
+        let ret = "";
+        for (i = 0; i < this.lines.length; i++) {
+            ret += `<div class="challenge-text" id="challenge-line-${i+1}">${i+1}. <span class="${(i == this.selected) ? 'challenge-text-selected-line' : ''}">${this.lines[i]}</span></div><br>`
+        }
+        return ret;
+    }
+
+}
+
+function lineSplit(text) {
+    // Split a one-line string into an array of lines
+    const LINE_WORD_COUNT = 10;
+    let lines = [];
+    words = text.split(' ');
+    for (i = 0; i < words.length; i++) {
+        if (lines.length == 0) {
+            lines.push("");
+        }
+
+        if (lines[lines.length - 1].split(' ').length < LINE_WORD_COUNT) {
+            lines[lines.length - 1] = lines[lines.length - 1] + words[i] + ' ';
+        }
+        else if (words[i] && words[i] != ' ' && words[i] != '\n') {
+            lines.push(words[i] + ' ');
+        }
+    }
+
+    return new ChallengeTextLineGroup(lines);
+}
+
+function renderChallengeText(lines) {
+    // Take a ChallengeTextLineGroup and display the lines in the challenge text div
+    let box = document.getElementById("challenge-text");
+    box.innerHTML = lines.toHTML();
+}
+
+var level_running = false;
+var lines = null;
+const LPS = 2.5; // Letters per second
+var difficulty; // Difficulty is in seconds. Letter count = seconds * 2.5.
+
+function setDifficulty(d) { 
+    // Take a number of seconds as input and update the difficulty text
+    difficulty = d;
+    document.getElementById("difficulty").textContent = `${Math.round(difficulty * LPS)} letters / ${difficulty} seconds`;
 }
 
 function genText() { 
@@ -40,34 +93,40 @@ function genText() {
     return text;
 }
 
-function lineSplit(text) {
-    // Split a one-line string into an array of lines
-    const LINE_WORD_COUNT = 10;
-    let lines = [];
-    words = text.split(' ');
-    for (i = 0; i < words.length; i++) {
-        if (lines.length == 0) {
-            lines.push("");
+function startLevel(d) {
+    // Take a number of seconds as input and set up level
+    setDifficulty(d);
+    level_running = true;
+    lines = lineSplit(genText());
+    renderChallengeText(lines);
+    console.log('Level starting with difficulty ' + d.toString());
+
+    document.onkeypress = (e) => {
+
+        if (e.repeat || !level_running) {
+            return;
         }
 
-        if (lines[lines.length - 1].split(' ').length < LINE_WORD_COUNT) {
-            lines[lines.length - 1] = lines[lines.length - 1] + words[i] + ' ';
+        if (e.key == "Enter") {
+            lines.selected++;
+        }
+    
+        else if (e.key == 'Backspace' && lines.selected > 0) {
+            lines.selected--;
+        }
+    
+        if (lines.selected + 1 > lines.lines.length) {
+            level_running = false;
+            document.onkeypress = null;
         }
         else {
-            lines.push(words[i] + ' ');
+            //document.getElementById(`challenge-line-${lines.selected+1}`).scrollIntoView();
+            scrollTo(document.getElementById(`challenge-line-${lines.selected+1}`));
         }
-    }
-
-    return lines;
-}
-
-function renderChallengeText(lines) {
-    // Take an array of strings and display them in the challenge text div
-    let box = document.getElementById("challenge-text");
-    box.innerHTML = "";
-    for (i = 0; i < lines.length; i++) {
-        box.innerHTML += `<br><p class="challenge-text">${lines[i]}</p>`
+    
+        renderChallengeText(lines);
+        
     }
 }
 
-setDifficulty(20);
+startLevel(1000);
