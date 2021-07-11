@@ -137,10 +137,16 @@ function ding() {
     document.getElementById('ding').play();
 }
 
+function toggleCompletionPrompt(toggle, allow_continue = false) {
+    document.getElementById('completion-prompt').style.display = toggle ? null : 'none';
+    document.getElementById('completion-prompt-continue').style.display = (toggle && allow_continue) ? null : 'none';
+    document.getElementById('completion-prompt-retry').style.display = toggle ? null : 'none';
+}
+
 function setupLevel(d) {
     // Take a number of seconds as input and set up level
     try {
-        window.clearTimer("Loading...");
+        window.clearTimer(" seconds");
     }
     catch (e) {
         if (!(e instanceof TypeError)) {
@@ -149,6 +155,7 @@ function setupLevel(d) {
     }
     setDifficulty(d);
     toggleKeyHints(false);
+    toggleCompletionPrompt(false);
     level_running = false;
     lines = lineSplit(genText());
     renderChallengeText(lines);
@@ -179,6 +186,7 @@ function setupLevel(d) {
         if (distance <= 1000) {
             clearTimer("Time's up!");
             ding();
+            toggleCompletionPrompt(true);
         }
 
     }, 1000);
@@ -209,6 +217,7 @@ function setupLevel(d) {
             level_running = false;
             document.onkeydown = null;
             window.clearTimer("Challenge complete!");
+            toggleCompletionPrompt(true, true);
         }
         else {
             //document.getElementById(`challenge-line-${lines.selected+1}`).scrollIntoView();
@@ -221,4 +230,22 @@ function setupLevel(d) {
 
 }
 
-setupLevel(100);
+function increaseDifficulty() {
+    if (document.getElementById('completion-prompt-continue').style.display == 'none') {
+        return;
+    }
+
+    setupLevel(difficulty+10);
+    toggleCompletionPrompt(false);
+}
+
+function restartLevel() {
+    if (document.getElementById('completion-prompt-retry').style.display == 'none') {
+        return;
+    }
+
+    setupLevel(difficulty);
+    toggleCompletionPrompt(false);
+}
+
+setupLevel(20);
