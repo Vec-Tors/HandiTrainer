@@ -54,7 +54,7 @@ span.negative {
     color: red;
 }
 
-div.timer-seconds {
+div.timer-seconds, div.wpm {
     text-align: left;
     width: 35%;
     align-self: center;
@@ -64,4 +64,8 @@ div.timer-seconds {
 span#timer-seconds {
     font-family: 'Roboto Mono', monospace;
     font-size: 40px;
+}
+
+span#wpm {
+    font-family: 'Roboto Mono', monospace;
 }

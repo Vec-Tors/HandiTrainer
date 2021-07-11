@@ -36,6 +36,14 @@ class ChallengeTextLineGroup {
         return ret;
     }
 
+    toString() {
+        return this.lines.join(" ");
+    }
+
+    get words() {
+        return this.toString().split(" ");
+    }
+
 }
 
 function lineSplit(text) {
@@ -70,6 +78,7 @@ var lines = null;
 const LPS = 2.5; // Letters per second
 var difficulty; // Difficulty is in seconds. Letter count = seconds * 2.5.
 var countdownTarget;
+var levelStart; // Date object representing start time of current level
 
 function setDifficulty(d) { 
     // Take a number of seconds as input and update the difficulty text
@@ -96,6 +105,13 @@ function genText() {
     return text;
 }
 
+function displayWPM(time) {
+    // Count the words in the global line group and display WPM given the completion time in ms
+
+    const WPM = Math.round(lines.words.length / (time/1000))*60;;
+    document.getElementById('wpm').innerText = WPM.toString();
+}
+
 function toggleKeyHints(b) {
     // Take in a boolean as input and enable/disable key hints
     keyhints = document.getElementsByClassName('keyhint');
@@ -119,6 +135,7 @@ function startTimer() {
 
     let getReadyCountdownTarget = (new Date()).getTime() + 4000;
     let getReadyCountdown = setInterval(function() {
+        levelStart = (new Date()).getTime();
         let now = (new Date()).getTime();
         let distance = Math.floor((getReadyCountdownTarget - now) / 1000);
         document.getElementById("timer-text").innerText = " Get ready! Starting in " + distance.toString() + "...";
@@ -218,6 +235,7 @@ function setupLevel(d) {
             document.onkeydown = null;
             window.clearTimer("Challenge complete!");
             toggleCompletionPrompt(true, true);
+            displayWPM((new Date()).getTime() - levelStart);
         }
         else {
             //document.getElementById(`challenge-line-${lines.selected+1}`).scrollIntoView();
