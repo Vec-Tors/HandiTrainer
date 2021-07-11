@@ -98,7 +98,6 @@ function genText() {
 
 function toggleKeyHints(b) {
     // Take in a boolean as input and enable/disable key hints
-    console.log('during')
     keyhints = document.getElementsByClassName('keyhint');
     for (let i = 0; i < keyhints.length; i++) {
         keyhints[i].style.visibility = b ? null : 'hidden';
@@ -107,10 +106,31 @@ function toggleKeyHints(b) {
 }
 
 function startTimer() {
-    countdownTarget = (new Date()).getTime() + (1000 * difficulty);
-    level_running = true;
+
+    startButton = document.getElementById("timer-start");
+
+    if (startButton.style.visibility == 'hidden') {
+        return;
+    }
+
+    startButton.style.visibility = 'hidden';
     toggleKeyHints(true);
-    document.getElementById("timer-start").style.visibility = 'hidden';
+    document.getElementById("timer-text").innerText = " Get ready! Starting in 3...";
+
+    let getReadyCountdownTarget = (new Date()).getTime() + 4000;
+    let getReadyCountdown = setInterval(function() {
+        let now = (new Date()).getTime();
+        let distance = Math.floor((getReadyCountdownTarget - now) / 1000);
+        document.getElementById("timer-text").innerText = " Get ready! Starting in " + distance.toString() + "...";
+
+        if (distance < 1) {
+            document.getElementById("timer-text").innerText = " Starting now!";
+            clearInterval(getReadyCountdown);
+            countdownTarget = (new Date()).getTime() + (1000 * difficulty);
+            level_running = true;
+        }
+
+    }, 1000);
 }
 
 function setupLevel(d) {
