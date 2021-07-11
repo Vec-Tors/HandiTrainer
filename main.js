@@ -10,7 +10,7 @@ function scrollTo(element) {
 function countLetters(text) { 
     // Count the characters in a str without spaces (includes punctuation)
     let length = 0;
-    for (i = 0; i < text.length; i++) {
+    for (let i = 0; i < text.length; i++) {
         if (text[i] != ' ') {
             length++;
         }
@@ -28,7 +28,7 @@ class ChallengeTextLineGroup {
 
     toHTML() {
         let ret = "";
-        for (i = 0; i < this.lines.length; i++) {
+        for (let i = 0; i < this.lines.length; i++) {
             if /*(Math.abs(i - this.selected) < 3)*/ (true) {
                 ret += `<div class="challenge-text" id="challenge-line-${i+1}">${i+1}. <span class="${(i == this.selected) ? 'challenge-text-selected-line' : ''}">${this.lines[i]}</span></div><br>`
             }   
@@ -43,7 +43,7 @@ function lineSplit(text) {
     const LINE_WORD_COUNT = 10;
     let lines = [];
     words = text.split(' ');
-    for (i = 0; i < words.length; i++) {
+    for (let i = 0; i < words.length; i++) {
         if (lines.length == 0) {
             lines.push("");
         }
@@ -69,6 +69,7 @@ var level_running = false;
 var lines = null;
 const LPS = 2.5; // Letters per second
 var difficulty; // Difficulty is in seconds. Letter count = seconds * 2.5.
+var countdownTarget;
 
 function setDifficulty(d) { 
     // Take a number of seconds as input and update the difficulty text
@@ -95,16 +96,71 @@ function genText() {
     return text;
 }
 
-function startLevel(d) {
-    // Take a number of seconds as input and set up level
-    setDifficulty(d);
+function toggleKeyHints(b) {
+    // Take in a boolean as input and enable/disable key hints
+    console.log('during')
+    keyhints = document.getElementsByClassName('keyhint');
+    for (let i = 0; i < keyhints.length; i++) {
+        keyhints[i].style.visibility = b ? null : 'hidden';
+        //console.log(i.toString() + '. ' + keyhints[i].style.visibility);
+    }
+}
+
+function startTimer() {
+    countdownTarget = (new Date()).getTime() + (1000 * difficulty);
     level_running = true;
+    toggleKeyHints(true);
+    document.getElementById("timer-start").style.visibility = 'hidden';
+}
+
+function setupLevel(d) {
+    // Take a number of seconds as input and set up level
+    try {
+        window.clearTimer("Loading...");
+    }
+    catch (e) {
+        if (!(e instanceof TypeError)) {
+            throw e;
+        }
+    }
+    setDifficulty(d);
+    toggleKeyHints(false);
+    level_running = false;
     lines = lineSplit(genText());
     renderChallengeText(lines);
+    scrollTo(document.getElementById(`challenge-line-1`));
     console.log('Level starting with difficulty ' + d.toString());
+    document.getElementById("timer-seconds").innerText = difficulty.toString().padStart(4, '0')
+    document.getElementById("timer-start").style.visibility = null;
+
+    let timer = setInterval(function() {
+        if (!level_running) {
+            return;
+        }
+        let now = (new Date()).getTime();
+        let distance = countdownTarget - now;
+        document.getElementById("timer-seconds").innerText = (Math.floor(distance/1000)).toString().padStart(4, '0')
+        //document.getElementById("timer-text").innerText = humanizeDuration(Math.floor(distance/1000) * 1000);
+        document.getElementById("timer-text").innerText = " seconds"
+
+        function clearTimer(message) {
+            clearInterval(timer);
+            document.getElementById("timer-seconds").innerText = '0000';
+            document.getElementById("timer-text").innerText =  ' ' + message;
+            toggleKeyHints(false);
+            document.getElementsByClassName('keyhint'); // For some reason the visibility does not change properly when this is not present
+        }
+        window.clearTimer = clearTimer;
+
+        if (distance <= 1000) {
+            clearTimer("Time's up!");
+        }
+
+    }, 1000);
+
 
     document.onkeydown = (e) => {
-        
+
         if (e.repeat || !level_running) {
             return;
         }
@@ -127,6 +183,7 @@ function startLevel(d) {
         if (lines.selected + 1 > lines.lines.length) {
             level_running = false;
             document.onkeydown = null;
+            window.clearTimer("Challenge complete!");
         }
         else {
             //document.getElementById(`challenge-line-${lines.selected+1}`).scrollIntoView();
@@ -136,6 +193,7 @@ function startLevel(d) {
         renderChallengeText(lines);
         
     }
+
 }
 
-startLevel(1000);
+setupLevel(100);
