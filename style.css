@@ -13,3 +13,13 @@ h1.title {
     align-self: center;
     align-content: center;
 }
+
+div#challenge-text {
+    max-width: 35%;
+    margin: 0 auto;
+}
+
+p.challenge-text {
+    font-family: 'Roboto Mono', monospace;
+    text-align: left;
+}
