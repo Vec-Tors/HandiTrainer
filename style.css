@@ -2,10 +2,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap');
 
-/* Variables */
-
-@selected-highlight: yellow;
-
 /* Styles */
 
 p, a, div, h1, h2, h3, h4, h5, h6 {
@@ -40,7 +36,7 @@ div.challenge-text, p.challenge-text {
 }
 
 .challenge-text-selected-line {
-    background-color: @selected-highlight;
+    background-color: yellow;
 }
 
 .keyhint {
