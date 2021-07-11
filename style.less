@@ -36,8 +36,24 @@ div.challenge-text, p.challenge-text {
     font-family: 'Roboto Mono', monospace;
     text-align: left;
     padding: 5px 5px 5px 5px;
+    user-select: none;
 }
 
 .challenge-text-selected-line {
     background-color: @selected-highlight;
-} 
+}
+
+.keyhint {
+    size: 10px;
+    width: 35%;
+    margin: 0 auto;
+    padding: 5px 5px 5px 5px;
+}
+
+span.positive {
+    color: green;
+}
+
+span.negative {
+    color: red;
+}
