@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/Vec-Tors/HandiTrainer/issues"
   },
-  "homepage": "https://github.com/Vec-Tors/HandiTrainer#readme",
-  "dependencies": {
-    "humanize-duration": "^3.27.0"
-  }
+  "homepage": "https://github.com/Vec-Tors/HandiTrainer#readme"
 }
