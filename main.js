@@ -74,7 +74,7 @@ var countdownTarget;
 function setDifficulty(d) { 
     // Take a number of seconds as input and update the difficulty text
     difficulty = d;
-    document.getElementById("difficulty").textContent = `${Math.round(difficulty * LPS)} letters / ${difficulty} seconds`;
+    document.getElementById("difficulty").textContent = `${Math.round(difficulty * LPS)} letters / ${difficulty + Math.round(0.05 * LPS * difficulty)} seconds`;
 }
 
 function genText() { 
@@ -126,7 +126,7 @@ function startTimer() {
         if (distance < 1) {
             document.getElementById("timer-text").innerText = " Starting now!";
             clearInterval(getReadyCountdown);
-            countdownTarget = (new Date()).getTime() + (1000 * difficulty);
+            countdownTarget = (new Date()).getTime() + (1000 * difficulty) + (Math.round(0.05 * LPS * difficulty) * 1000);
             level_running = true;
         }
 
@@ -150,7 +150,7 @@ function setupLevel(d) {
     renderChallengeText(lines);
     scrollTo(document.getElementById(`challenge-line-1`));
     console.log('Level starting with difficulty ' + d.toString());
-    document.getElementById("timer-seconds").innerText = difficulty.toString().padStart(4, '0')
+    document.getElementById("timer-seconds").innerText = (difficulty + Math.round(0.05 * LPS * difficulty)).toString().padStart(4, '0')
     document.getElementById("timer-start").style.visibility = null;
 
     let timer = setInterval(function() {
