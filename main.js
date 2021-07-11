@@ -133,6 +133,10 @@ function startTimer() {
     }, 1000);
 }
 
+function ding() {
+    document.getElementById('ding').play();
+}
+
 function setupLevel(d) {
     // Take a number of seconds as input and set up level
     try {
@@ -174,6 +178,7 @@ function setupLevel(d) {
 
         if (distance <= 1000) {
             clearTimer("Time's up!");
+            ding();
         }
 
     }, 1000);
